@@ -1,0 +1,10 @@
+.vscode
+.git
+env-ma
+.env
+env/
+static/
+*.log
+*.pot
+*.pyc
+_pycache_
