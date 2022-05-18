@@ -3,8 +3,7 @@
 env-ma
 .env
 env/
-static/
 *.log
 *.pot
 *.pyc
-_pycache_
+__pycache__
