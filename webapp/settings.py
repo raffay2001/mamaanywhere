@@ -178,10 +178,12 @@ AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL')
 
 #--------------- static files configuration for production ------------------#
 # AWS_LOCATION = 'static'
+STATIC_URL = '/static/'
+
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static')
 ]
-STATIC_URL = "static/"
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
