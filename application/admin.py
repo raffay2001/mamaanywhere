@@ -35,6 +35,8 @@ class AccessAdmin(admin.ModelAdmin):
         return obj.user.first_name
 
 
+admin.site.register(UploadPrivate)
+admin.site.register(ZoomLink)
 admin.site.register(Session)
 admin.site.register(Training, TrainingAdmin)
 admin.site.register(Module, ModuleAdmin)

@@ -8,8 +8,8 @@ from django.contrib.sessions.models import Session
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django_quill.fields import QuillField
+from webapp.storages import PrivateMediaStorage
 # from django.contrib import admin
-
 
 # Create your models here.
 
@@ -18,7 +18,19 @@ from django_quill.fields import QuillField
 # python manage.py runserver
 
 
+class UploadPrivate(models.Model):
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    file = models.FileField(storage=PrivateMediaStorage())
+
+
+class ZoomLink(models.Model):
+    link = models.URLField()
+    to_show = models.BooleanField(default=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
 # Custom Model for the Device
+
+
 class Device(models.Model):
     session = models.OneToOneField(Session, on_delete=models.CASCADE)
     browser = models.CharField(max_length=50)

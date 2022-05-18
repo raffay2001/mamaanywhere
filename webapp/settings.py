@@ -146,10 +146,6 @@ USE_L10N = True
 USE_TZ = False
 
 
-
-
-
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = "/signin/"
@@ -166,7 +162,7 @@ BOOTSTRAP5 = {
 # static files configuration for development
 # STATIC_URL = '/static/'
 # STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static') ]
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 #--------------------- media files configuration for development-----------------#
 # MEDIA_URL = '/media/'
@@ -186,7 +182,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 #--------------------- media files configuration for production-----------------#
@@ -195,3 +191,5 @@ MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
 DEFAULT_FILE_STORAGE = 'webapp.storages.MediaStore'
 
 
+PRIVATE_MEDIA_LOCATION = 'private'
+PRIVATE_FILE_STORAGE = 'webapp.storages.PrivateMediaStorage'
