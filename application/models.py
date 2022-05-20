@@ -122,7 +122,7 @@ def delete_session(sender, instance, *args, **kwargs):
 class Training(models.Model):
     name = models.CharField(max_length=50)
     description = QuillField(null=True, blank=True)
-    thumbnail = models.ImageField(upload_to='thumbnails/')
+    thumbnail = models.ImageField(storage=PrivateMediaStorage())
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -161,7 +161,7 @@ class Training(models.Model):
 class Module(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
-    thumbnail = models.ImageField(upload_to='thumbnails/')
+    thumbnail = models.ImageField(storage=PrivateMediaStorage())
     training = models.ForeignKey(Training, on_delete=models.CASCADE)
     prev = models.ForeignKey('self', on_delete=models.CASCADE,
                              related_name='mod_prev', null=True, blank=True)
@@ -198,8 +198,8 @@ class Module(models.Model):
 class Media(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
-    thumbnail = models.ImageField(upload_to='thumbnails/')
-    file = models.FileField(upload_to='media-file/')
+    thumbnail = models.ImageField(storage=PrivateMediaStorage())
+    file = models.FileField(storage=PrivateMediaStorage())
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
     prev = models.ForeignKey('self', on_delete=models.CASCADE,
                              related_name='file_prev', null=True, blank=True)
