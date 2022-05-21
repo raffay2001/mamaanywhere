@@ -33,6 +33,16 @@ class Contact_Info(models.Model):
         verbose_name_plural = "Contact Info"
 
 
+class Validity(models.Model):
+    start_date = models.DateField()
+    end_date = models.DateField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Validity"
+        verbose_name_plural = "Validity"
+
+
 class UploadPrivate(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     file = models.FileField(storage=PrivateMediaStorage())

@@ -49,18 +49,24 @@ admin.site.register(Completed)
 class ZoomLinkInline(admin.StackedInline):
     model = ZoomLink
     extra = 1
-    max_num = 0
+    max_num = 1
     verbose_name = 'Zoom link'
 
 
-class Contact_Info(admin.StackedInline):
+class ContactInfoInline(admin.StackedInline):
     model = Contact_Info
     extra = 1
-    max_num = 0
+    max_num = 1
+
+
+class ValidityInline(admin.StackedInline):
+    model = Validity
+    extra = 1
+    max_num = 1
 
 
 class UserAdmin(BaseUserAdmin):
-    inlines = [Contact_Info, ZoomLinkInline]
+    inlines = [ValidityInline, ContactInfoInline, ZoomLinkInline]
     list_display = ('email', 'first_name', 'last_name',
                     'is_superuser', 'date_joined', 'option')
     list_filter = ('is_staff', 'is_superuser')

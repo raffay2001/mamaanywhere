@@ -122,7 +122,8 @@ def profile(request):
         "page": "profile",
         "device_sessions": device_sessions,
         "password_form": password_form,
-        "accessed_training": get_accessed_training(request.user)
+        "accessed_training": get_accessed_training(request.user),
+        "validity": Validity.objects.filter(user = request.user).first()
     }
     return render(request, "profile.html", context)
 
