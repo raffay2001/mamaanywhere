@@ -9,6 +9,7 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django_quill.fields import QuillField
 from webapp.storages import PrivateMediaStorage
+from django.core.validators import RegexValidator
 # from django.contrib import admin
 
 # Create your models here.
@@ -16,6 +17,20 @@ from webapp.storages import PrivateMediaStorage
 # python manage.py makemigrations
 # python manage.py migrate
 # python manage.py runserver
+
+
+class Contact_Info(models.Model):
+    phone_regex = RegexValidator(
+        regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+    )
+    phone_number = models.CharField(
+        validators=[phone_regex], max_length=16, blank=True)  # Validators should be a list
+    address = models.CharField(max_length=255)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Contact Info"
+        verbose_name_plural = "Contact Info"
 
 
 class UploadPrivate(models.Model):
@@ -27,6 +42,10 @@ class ZoomLink(models.Model):
     link = models.URLField()
     to_show = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Zoom Link"
+        verbose_name_plural = "Zoom Link"
 
 # Custom Model for the Device
 
@@ -176,6 +195,9 @@ class Module(models.Model):
             return description[0: limit] + "..."
         return description
 
+    def get_all_media_objects(self):
+        return Media.objects.filter(module=self)
+
     def get_all_media(self):
         all_media = Media.objects.filter(
             module=self).values_list("name", flat=True)
@@ -226,6 +248,10 @@ class Access(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     training = models.ForeignKey(Training, on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
+
+    class Meta:
+        verbose_name = "Media access"
+        verbose_name_plural = "Media access"
 
 
 class Completed(models.Model):

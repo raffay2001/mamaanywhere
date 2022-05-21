@@ -18,6 +18,7 @@ import uuid
 from django.contrib.auth import user_logged_in
 from django.dispatch.dispatcher import receiver
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User, auth
 
 
 # Signals to add device in loggged in device
@@ -248,25 +249,28 @@ def delete_user_device(request, device_id):
         return HttpResponseRedirect(reverse('profile'))
 
 
-def get_accessed_training(user):
-    access = Access.objects.filter(
-        user=user).values_list("training_id", flat=True)
-    return access
+def get_accessed_training_objects(user):
+    return Access.objects.filter(user=user)
 
-# Function to Render the All Trainings Page
+
+def get_accessed_training(user):
+    access_objs = get_accessed_training_objects(user)
+    return access_objs.values_list("training_id", flat=True)
 
 
 @login_required
 def all_trainings(request):
     trainings = Training.objects.all()
     accessed_training = get_accessed_training(request.user)
-    allowed = training = None
+    allowed = None
+    training = None
     expand_id = request.GET.get('expand')
     if expand_id:
         training = Training.objects.filter(id=expand_id).first()
-        allowed = True if training and training.id in accessed_training else False
     else:
         training = trainings.first()
+    allowed = True if (
+        training and training.id in accessed_training) else False
     completed_media_ids = Completed.objects.filter(
         user=request.user).values_list('media_id', flat=True)
 
@@ -284,6 +288,67 @@ def all_trainings(request):
     }
     print(training)
     return render(request, 'all_trainings.html', context)
+
+
+@login_required
+def progress(request):
+    if not request.user.is_superuser:
+        messages.error(
+            request, "You don't have permission to access this page")
+        return redirect("index")
+
+    all_users = User.objects.filter(is_superuser=False)[1:]
+    updated_users = []
+    for user in all_users:
+        access_objects = get_accessed_training(user)
+        updated_users.append(
+            {
+                'user': user,
+                'count': access_objects.count()
+            }
+        )
+
+    context = {
+        'users': updated_users,
+    }
+    return render(request, "progress/index.html", context)
+
+
+@login_required
+def progress_trainings(request, id):
+    if not request.user.is_superuser:
+        messages.error(
+            request, "You don't have permission to access this page")
+        return redirect("index")
+
+    all_users = User.objects.filter(is_superuser=False)[1:]
+    current_user = User.objects.get(id=id)
+    current_user_trainings = get_accessed_training_objects(current_user)
+    completed_media_ids = Completed.objects.filter(
+        user=current_user).values_list('media_id', flat=True)
+    current_user_trainings_updated = []
+    for access in current_user_trainings:
+        my_training = access.training
+        my_training.progress = my_training.get_progress(
+            completed_media_ids)
+        current_user_trainings_updated.append(my_training)
+
+    updated_users = []
+    for user in all_users:
+        access_objects = get_accessed_training(user)
+        updated_users.append(
+            {
+                'user': user,
+                'count': access_objects.count()
+            }
+        )
+
+    context = {
+        'trainings': current_user_trainings_updated,
+        'users': updated_users,
+        'current_user': current_user
+    }
+    return render(request, "progress/training_progress.html", context)
 
 
 # Function to render the all modules page
@@ -307,6 +372,54 @@ def all_modules(request, training_id):
     }
     return render(request, 'all_modules.html', context)
 
+
+@login_required
+def progress_modules(request, id, training_id):
+    if not request.user.is_superuser:
+        messages.error(
+            request, "You don't have permission to access this page")
+        return redirect("index")
+
+    all_users = User.objects.filter(is_superuser=False)[1:]
+    current_user = User.objects.get(id=id)
+    completed_media_ids = Completed.objects.filter(
+        user=current_user).values_list('media_id', flat=True)
+    current_user_trainings = get_accessed_training_objects(current_user)
+    current_user_trainings_ids = current_user_trainings.values_list(
+        "training_id", flat=True
+    )
+    current_training = Training.objects.filter(
+        id=training_id, id__in=current_user_trainings_ids).first()
+    current_training.progress = current_training.get_progress(
+        completed_media_ids)
+    updated_users = []
+    for user in all_users:
+        access_objects = get_accessed_training(user)
+        updated_users.append(
+            {
+                'user': user,
+                'count': access_objects.count()
+            }
+        )
+
+    # Fetching modules
+    modules = Module.objects.filter(training=current_training)
+    for module in modules:
+        module.progress = module.get_progress(completed_media_ids)
+
+    # Fetching completed medias
+    completed_media_ids = Completed.objects.filter(
+        user=current_user).values_list('media_id', flat=True)
+
+    context = {
+        'completed_media': completed_media_ids,
+        'modules': modules,
+        'training': current_training,
+        'users': updated_users,
+        'current_user': current_user
+    }
+    return render(request, "progress/module_progress.html", context)
+
 # Function to Render the All Modules Page
 
 
@@ -324,10 +437,15 @@ def resume_all_modules(request, training_id):
     # all compeleted objects ids list
     completed_media_ids_list = list(completed_media_ids)
     # if not
-    if all_media_ids_list != completed_media_ids_list and len(completed_media_ids_list) != 0:
-        redirected_media_id = get_remaining_media_id(
-            all_media_ids_list, completed_media_ids_list)
+    redirected_media_id = get_remaining_media_id(
+        all_media_ids_list, completed_media_ids_list)
+
+    if len(completed_media_ids_list) == 0:
         return main_media(request, redirected_media_id)
+
+    if len(all_media_ids_list) != len(completed_media_ids_list) and len(completed_media_ids_list) != 0:
+        return main_media(request, redirected_media_id)
+
     for module in modules:
         module.progress = module.get_progress(completed_media_ids)
     context = {
