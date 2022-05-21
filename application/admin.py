@@ -43,7 +43,7 @@ admin.site.register(Training, TrainingAdmin)
 admin.site.register(Module, ModuleAdmin)
 admin.site.register(Media)
 admin.site.register(Access, AccessAdmin)
-# admin.site.register(Completed)
+admin.site.register(Completed)
 
 
 class ZoomLinkInline(admin.StackedInline):
