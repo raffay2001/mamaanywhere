@@ -123,7 +123,7 @@ def profile(request):
         "device_sessions": device_sessions,
         "password_form": password_form,
         "accessed_training": get_accessed_training(request.user),
-        "validity": Validity.objects.filter(user = request.user).first()
+        "validity": Validity.objects.filter(user=request.user).first()
     }
     return render(request, "profile.html", context)
 
@@ -152,12 +152,7 @@ def signup(request):
         user_form = UserForm(request.POST)
         if user_form.is_valid():
             new_user = User.objects.create_user(**user_form.cleaned_data)
-            messages.success(request, "You have beem registered successfully!")
-
-            folder_names = ["Term Papers", "Quizzes", "Project"]
-            for folder in folder_names:
-                new_folder = Folder(name=folder, user=new_user)
-                new_folder.save()
+            messages.success(request, "You have been registered successfully!")
             return redirect("signin")
 
     context = {'user_form': user_form}
