@@ -214,37 +214,6 @@
 
 
     <script>
-        if ('{{media_id}}') {
-            // const nextURL = 'http://127.0.0.1:8000/trainings/{{training_id}}/modules/{{module_id}}/medias/{{media_id}}/';
-
-            // // let url = 'http://127.0.0.1:8000/trainings/{{training_id}}/modules/{{module_id}}/medias/{{media_id}}/';
-
-            // const nextTitle = 'Dashboard - TrainingSession'
-            // const nextState = { additionalInformation: 'Updated the URL with JS' };
-
-            // // window.location.href = url;
-            // // window.location.assign(url);
-
-            // // This will create a new entry in the browser's history, without reloading
-            // history.pushState({}, "", nextURL);
-
-            // // This will replace the current entry in the browser's history, without reloading
-            // window.history.replaceState(nextState, nextTitle, nextURL);
-
-            // let url = 'http://127.0.0.1:8000/trainings/{{training_id}}/modules/{{module_id}}/medias/{{media_id}}/';
-            // window.location = url;
-        }
-        
-
-
-        if (to_enter_password) {
-            console.log("yes");
-            setTimeout(() => {
-                console.log($("input.js-password"));
-                $("input.js-password").value = "asdasd";
-            }, 500);
-        }
-
 
         var elem = document.getElementById("my-content");
         function openFullscreen() {
@@ -257,6 +226,7 @@
             }
         }
     </script>
+    <script src="{% static 'assets/js/videoResume.js' %}"></script>
 
 </div>
 

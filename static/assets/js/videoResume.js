@@ -1,5 +1,5 @@
 let sampleVideo = document.getElementById("video");
-let videoName = sampleVideo.childNodes[1].src.slice(58);
+let videoName = sampleVideo.getAttribute("src");
 videoName = videoName.replace(".mp4", "");
 videoName = videoName.replace("mp3", "");
 videoName = videoName.split("Signature=")[0];
