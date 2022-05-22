@@ -170,7 +170,11 @@ class Training(models.Model):
         for i in completed_ids:
             if i in all_medias:
                 completed += 1
-        return int((completed / all_medias.count()) * 100)
+
+        media_count = all_medias.count()
+        if media_count == 0:
+            return 0
+        return int((completed / media_count) * 100)
 
     def get_short_description(self):
         from html2text import html2text
@@ -220,7 +224,11 @@ class Module(models.Model):
         for i in completed_ids:
             if i in all_medias:
                 completed += 1
-        return int((completed / all_medias.count()) * 100)
+
+        media_count = all_medias.count()
+        if media_count == 0:
+            return 0
+        return int((completed / media_count) * 100)
 
     def __str__(self):
         return self.name
