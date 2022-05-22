@@ -43,7 +43,7 @@ urlpatterns = [
     # path('categories/<id>/delete', views.delete_category, name="delete_category"),
     # path('add-catgories', views.add_catgories, name="add-catgories"),
 
-    path('signup/', views.signup, name="signup"),
+    #     path('signup/', views.signup, name="signup"),
     path('signin/', views.signin, name="signin"),
     path('logout/', views.signout, name="logout"),
 
